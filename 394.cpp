@@ -17,6 +17,9 @@ int main(int argc, char ** argv)
     vector<int> Us;
     vector<int> Cs;
 
+    // safe
+    if( argc < 1)
+        return -1;
     // read file
     ifstream if()
     // init file
