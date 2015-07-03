@@ -7,7 +7,7 @@ LANG: C++
 #include <iostream>
 #include <vector>
 #include <string>
-#include <
+#include <stdio.h>
 using namespace std;
 int main(int argc, char ** argv)
 {
@@ -21,9 +21,17 @@ int main(int argc, char ** argv)
     if( argc < 1)
         return -1;
     // read file
-    ifstream if()
+    printf ("Hello world");
     // init file
+    for (int i = 0; i < 100; i++) {
+        /* code */
+        Ls.push_back(i);
+    }
     // calc
-
+    for (int i; i < Ls.size(); ++i){
+        /* code */
+        printf("%d\n",Ls[i]);
+    }
+    
     return 0;
 }
