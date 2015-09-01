@@ -5,6 +5,7 @@
 #include<string>
 #include<sstream>
 #include<vector>
+#include <algorithm>
 using namespace::std;
 
 struct Arc{
@@ -35,14 +36,27 @@ int main(int argc, char **argv){
         
     }
     
-    for_each(arcs.begin(), arc.end(), )
     for ( auto &i : arcs ) {
-        std::cout << i.start << "," << i.end << std::endl;
+        std::cout << '(' << i.start << "," << i.end << ')' << '\t';
     }
+    cout << endl;
     
     // sort
+    sort(arcs.begin(), arcs.end(),
+    [](const Arc& a, const Arc& b)
+            {
+            return a.start < b.start;
+            });
     
+    
+
+    cout << "after sort" << endl;
+    for ( auto &i : arcs ) {
+        std::cout << '(' << i.start << "," << i.end << ')' << '\t';
+    }
+   cout << endl;
     // remove dumplicate
+    
     
     // build first leve
     
