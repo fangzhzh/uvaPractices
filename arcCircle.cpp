@@ -11,7 +11,20 @@ using namespace::std;
 struct Arc{
     int start;
     int end;
+    inline bool operator==(Arc rvalue){
+        if( rvalue.start == start && rvalue.end == end) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
+void printAll(vector<Arc> arcs){
+    for ( Arc &i : arcs ) {
+        std::cout << '(' << i.start << "," << i.end << ')' << '\t';
+    }
+    cout << endl;
+}
 
 int main(int argc, char **argv){
     // read files
@@ -29,36 +42,89 @@ int main(int argc, char **argv){
     
     std::getline(input, line);
     ss << line;
-    while(ss.good()) {
+    ss.seekg(0);
+
+    while(!ss.eof()) {
         Arc arc;
         ss >> ch >> arc.start >> ch >> arc.end >> ch >> ch;
+        cout << "input("<< arc.start << "," << arc.end << ")" << endl;
         arcs.push_back(arc);
-        
     }
     
-    for ( auto &i : arcs ) {
-        std::cout << '(' << i.start << "," << i.end << ')' << '\t';
-    }
-    cout << endl;
+    printAll(arcs);
     
     // sort
     sort(arcs.begin(), arcs.end(),
     [](const Arc& a, const Arc& b)
-            {
-            return a.start < b.start;
-            });
-    
-    
+           {
+           return a.start < b.start;
+           });
+   
 
     cout << "after sort" << endl;
-    for ( auto &i : arcs ) {
-        std::cout << '(' << i.start << "," << i.end << ')' << '\t';
-    }
-   cout << endl;
+    printAll(arcs);
+
     // remove dumplicate
+    vector<Arc> arc2Delete;
+    for( int pos = 1; pos < arcs.size()-1; ++pos) {
+        Arc a = arcs[pos];
+        int prevEnd, nextBegin;
+        if( pos == 0) {
+            prevEnd = 0;
+        } else {
+            prevEnd = arcs[pos-1].end;
+        }
+        if( pos == arcs.size()-1) {
+            nextBegin = 100;
+        } else {
+            nextBegin = arcs[pos+1].start;
+        }
+        if(a.start < prevEnd && a.end > nextBegin){
+            arc2Delete.push_back(a);
+            pos++;
+        }
+    }
+    printAll(arc2Delete);
+    for( const Arc& arc : arc2Delete) {
+        arcs.erase(remove(arcs.begin(), arcs.end(), arc),arcs.end());
+    }
+
+    cout << "after remove invalid" << endl;
+    printAll(arcs);
+
+    // build first level
+    vector< vector<int> > link(arcs.size(), vector<int>(circle.end));
+    for( int i = 0; i <  arcs.size(); ++i) {
+        if (arcs[i].end < arcs[i].start ) {
+            link[i][0] = 0;
+        }
+        else {
+            for( int j = i+1; j < arcs.size(); ++j) {
+                if( arcs[i].end >= arcs[j].start-1 ) {
+                    link[i][0] = j; 
+                    cout << "i:" <<  i << "\t link to " << j << endl;
+                    break;
+                }
+            }
+        }
+    }
     
-    
-    // build first leve
-    
+
     // build to end
+    int minLevel=circle.end;
+    for (int i = 0; i < arcs.size(); ++i){
+        minLevel = circle.end;
+        for( int level = 0; level < circle.end; ++level) {
+            cout << "i:" << i << ",level:" << level << endl;
+            if(link[link[i][level]][0]!=0) {
+                link[i][level+1]=link[link[i][level]][0];
+            }else {
+                if( minLevel > level  && level > 0){
+                    minLevel = level;
+                    break;
+                }
+            }
+        }
+    }
+    cout << "level:" << minLevel << endl;
 }
