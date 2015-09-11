@@ -69,6 +69,7 @@ int main(int argc, const char * argv[]) {
     int radia1, radia2;
     int caseSeq = 1;
     
+    printf("Case 1:\n");
     while (caseCount --) {
         scanf("%d%d", &radia1, &radia2);
         radia1 = pow(radia1,2);
@@ -124,7 +125,7 @@ int main(int argc, const char * argv[]) {
         printVecPoint("double", dangerDoublePoint);
         printVecPoint("none", dangerNonePoint);
         
-        printf("Case #%d: %d\n",caseSeq++,(int)dangerNonePoint.size()-(int)dangerDoublePoint.size());
+        printf("%d\n",(int)dangerNonePoint.size()-(int)dangerDoublePoint.size());
     }
     
     return 0;
