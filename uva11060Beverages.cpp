@@ -8,11 +8,47 @@ using namespace std;
 struct Drink{
     string name;
     int score;
+    
 };
 
 
-void process(vector<Drink> drinks, string); b1, string b2){
 
+
+void process(vector<Drink>& drinks, string b1, string b2){
+    int index1 = -1, index2=-1;
+    bool found = false;
+    for (int i = 0; i < drinks.size(); i++) {
+        if(drinks[i].name.compare(b1) == 0) {
+            index1 = i;
+            if (found) {
+                break;
+            } else {
+                found = true;
+            }
+            continue;
+        }
+        if(drinks[i].name.compare(b2) == 0) {
+            index2 = i;
+            if (found) {
+                break;
+            } else {
+                found = true;
+            }
+            continue;
+        }
+    }
+    cout << drinks[index1].name << " < " << drinks[index2].name << endl;
+    for (int i = index2; i < drinks.size(); i++) {
+        if( drinks[index1].score < drinks[index2].score) {
+            continue;
+        }
+        
+        if ( i == index1) {
+            continue;
+        }
+        int dis = max(drinks[index1].score + 1, drinks[index2].score+1);
+        drinks[i].score = drinks[i].score + dis;
+    }
 }
 
 int main(){
@@ -27,9 +63,6 @@ int main(){
             cin >> tmp.name;
             drinks.push_back(tmp);
         }
-        while (count-- > 0) {
-        }
-
         scanf("%d", &caseCnt);
         while (caseCnt-- > 0) {
             string b1, b2;
@@ -41,6 +74,10 @@ int main(){
         if (cin.eof()) {
             break;
         }
+        
+        for (int i = 0; i < drinks.size(); i++) {
+            cout << drinks[i].name << ":" << drinks[i].score;
+        }         
         cout << "end" << endl;
     }
 }
