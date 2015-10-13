@@ -4,6 +4,7 @@
 #include <deque>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 
 using namespace std;
@@ -13,14 +14,25 @@ struct Drink{
     vector<Drink*> previous;
     vector<Drink*> nexts;
 };
+void removeLink(Drink*& drink1, Drink*& drink2) {
+    drink1->nexts.erase(
+        remove(drink1->nexts.begin(), drink1->nexts.end(), drink2),
+        drink1->nexts.end());
+        
+    drink2->previous.erase(
+        remove(drink2->previous.begin(), drink2->previous.end(), drink1),
+        drink2->previous.end());
+}
 
 void removeDrinkPrevois(Drink* &drink1, Drink* &drink2) {
-    // next
+    // previous
     for (int i = 0; i < drink1->previous.size(); i++) {
-        remove(drink1->previous[i]->nexts.begin(), drink1->previous[i]->nexts.end(), drink2);
+        removeLink(drink1->previous[i], drink2);
     }
+    
+    // next
     for (int i = 0; i < drink1->nexts.size(); ++i) {
-        remove(drink1->nexts[i]->nexts.begin(), drink1->nexts[i]->nexts.end(), drink2);
+        removeLink(drink1->nexts[i], drink2);        
     }
 }
 
@@ -73,7 +85,7 @@ void process1(vector<Drink*> drinks, string b1, string b2){
     drink2->previous.push_back(drink1);
 }
 
-void topIterate(vector<Drink*> drinks){
+Drink* &drinking(std::vector<Drink*>& drinks ){
     vector<Drink*>::iterator  i = drinks.begin();
     for(; i != drinks.end();
         ++i) {
@@ -81,22 +93,24 @@ void topIterate(vector<Drink*> drinks){
             break;
         }
     }
+    Drinks* curDrink = drinks[i];
+    drinks.erase(drinks.being() + i);
+    return curDrink;
+}
+void topIterate(vector<Drink*>& drinks){
+    std::vector<Drink*> orderedDrink;
     deque<Drink*> drinkDeque;
-    drinkDeque.push_back(*i);
+    drinkDeque.push_back(drinking(drinks));
     cout << (*i)->name;
-    int level = 0;
     
     while(!drinkDeque.empty()){
         Drink* drink = drinkDeque.front();
-        if(drink->nexts.empty()){
-            break;
-        }
-        for( int k = 0; k < drink->nexts.size(); ++k){
-            cout << " " << drink->nexts[k]->name;
-            drinkDeque.push_back(drink->nexts[k]);
-        }
+        cout << drink->name << " ";
         drinkDeque.pop_front();
-        ++level;
+        for( int k = 0; k < drink->nexts.size(); ++k){
+            removeLink(drink, drink->nexts[i]);
+        }
+        drinking(drinks);
     }
     cout << endl;
     
