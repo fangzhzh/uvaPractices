@@ -16,12 +16,12 @@ struct Drink{
 };
 void removeLink(Drink*& drink1, Drink*& drink2) {
     drink1->nexts.erase(
-        remove(drink1->nexts.begin(), drink1->nexts.end(), drink2),
-        drink1->nexts.end());
-        
+                        remove(drink1->nexts.begin(), drink1->nexts.end(), drink2),
+                        drink1->nexts.end());
+    
     drink2->previous.erase(
-        remove(drink2->previous.begin(), drink2->previous.end(), drink1),
-        drink2->previous.end());
+                           remove(drink2->previous.begin(), drink2->previous.end(), drink1),
+                           drink2->previous.end());
 }
 
 void removeDrinkPrevois(Drink* &drink1, Drink* &drink2) {
@@ -32,28 +32,28 @@ void removeDrinkPrevois(Drink* &drink1, Drink* &drink2) {
     
     // next
     for (int i = 0; i < drink1->nexts.size(); ++i) {
-        removeLink(drink1->nexts[i], drink2);        
+        removeLink(drink1->nexts[i], drink2);
     }
 }
 
 void processLink(Drink* &drink1, Drink* &drink2) {
     if(drink1->nexts.empty()) {
         drink1->nexts.push_back(drink2);
-        return;
-    }
-    vector<Drink*>::iterator  i = drink1->nexts.begin();
-    for(;
-        i != drink1->nexts.end();
-        ++i) {
-        if((*i)->score > drink2->score ){
+    } else{
+        vector<Drink*>::iterator  i = drink1->nexts.begin();
+        for(;
+            i != drink1->nexts.end();
+            ++i) {
+            if((*i)->score > drink2->score ){
+                drink1->nexts.insert(i, drink2);
+                break;
+            }
+        }
+        if (i == drink1->nexts.end()) {
             drink1->nexts.insert(i, drink2);
-            break;
         }
     }
-    if (i == drink1->nexts.end()) {
-        drink1->nexts.insert(i, drink2);
-    }
-    removeDrinkPrevois(drink1, drink2);
+//    removeDrinkPrevois(drink1, drink2);
 }
 
 void process1(vector<Drink*> drinks, string b1, string b2){
@@ -85,7 +85,7 @@ void process1(vector<Drink*> drinks, string b1, string b2){
     drink2->previous.push_back(drink1);
 }
 
-Drink* &drinking(std::vector<Drink*>& drinks ){
+Drink* drinking(std::vector<Drink*>& drinks ){
     vector<Drink*>::iterator  i = drinks.begin();
     for(; i != drinks.end();
         ++i) {
@@ -93,68 +93,38 @@ Drink* &drinking(std::vector<Drink*>& drinks ){
             break;
         }
     }
-    Drinks* curDrink = drinks[i];
-    drinks.erase(drinks.being() + i);
-    return curDrink;
+    if (i != drinks.end()) {
+        Drink *curDink = *i;
+        drinks.erase(i);
+        return curDink;
+    }
+    return NULL;
+    
 }
 void topIterate(vector<Drink*>& drinks){
     std::vector<Drink*> orderedDrink;
     deque<Drink*> drinkDeque;
     drinkDeque.push_back(drinking(drinks));
-    cout << (*i)->name;
     
     while(!drinkDeque.empty()){
         Drink* drink = drinkDeque.front();
-        cout << drink->name << " ";
+        cout << " " << drink->name;
         drinkDeque.pop_front();
-        for( int k = 0; k < drink->nexts.size(); ++k){
-            removeLink(drink, drink->nexts[i]);
+        vector<Drink*> nexts = drink->nexts;
+        for( int k = 0; k < nexts.size(); ++k){
+            removeLink(drink, nexts[k]);
         }
-        drinking(drinks);
+        Drink* curDink = drinking(drinks);
+        if (curDink == NULL) {
+            break;
+        }
+        drinkDeque.push_back(curDink);
     }
-    cout << endl;
-    
-}
-
-void process(vector<Drink*>& drinks, string b1, string b2){
-    int index1 = -1, index2=-1;
-    bool found = false;
-    for (int i = 0; i < drinks.size(); i++) {
-        if(drinks[i]->name.compare(b1) == 0) {
-            index1 = i;
-            if (found) {
-                break;
-            } else {
-                found = true;
-            }
-            continue;
-        }
-        if(drinks[i]->name.compare(b2) == 0) {
-            index2 = i;
-            if (found) {
-                break;
-            } else {
-                found = true;
-            }
-            continue;
-        }
-    }
-    cout << drinks[index1]->name << " < " << drinks[index2]->name << endl;
-    for (int i = index2; i < drinks.size(); i++) {
-        if( drinks[index1]->score < drinks[index2]->score) {
-            continue;
-        }
-        
-        if ( i == index1) {
-            continue;
-        }
-        int dis = max(drinks[index1]->score + 1, drinks[index2]->score+1);
-        drinks[i]->score = drinks[i]->score + dis;
-    }
+    cout << "." << endl << endl;
 }
 
 int main(){
-    
+    int runCnt = 1;
     while (true){
         int count, caseCnt;
         scanf("%d", &count);
@@ -176,10 +146,12 @@ int main(){
         if (cin.eof()) {
             break;
         }
+        cout << "Case #" << runCnt << ": Dilbert should drink beverages in this order:";
         topIterate(drinks);
         for( int k = 0; k < drinks.size(); ++k){
             delete drinks[k];
         }
+        runCnt++;
     }
     
 }
