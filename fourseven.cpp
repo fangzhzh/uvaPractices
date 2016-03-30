@@ -3,22 +3,25 @@
 #include <regex>
 using namespace std;
 int main(){
-    regex reg1("[47]+");
+    return 0;
+    int n;
     while(true){
-        int s, m;
+        long long s, m;
         cin >> s;
         if(cin.eof()){
             return 0;
         }
         cin >> m;
         int count = 0;
-        for(int i = s; i < m; ++i){
+        for(long i = s; i <= m; ++i){
             string str = to_string(i);
-            if( regex_match(str, reg1)){
-                ++count;
-            }
-            cout << count << endl;
+            sort(str.begin(), str.end());
+            long found = str.find_first_not_of("47");
+            if( found == string::npos) {
+                count++;
+            }             
         }
-
+        ++n;
+        cout << count << endl;
     }
 }
